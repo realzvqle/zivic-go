@@ -24,7 +24,7 @@ func main() {
 
 		rl.ClearBackground(rl.Black)
 		//button := ZiDrawButton("Hi", 10, 10, 40, 40, rl.Red, rl.DarkGreen, rl.Brown, -1)
-		SummonWIndow(&win, rl.Beige, rl.White, rl.Gray, rl.Brown, rl.White, false)
+		SummonWIndow(&win, rl.Beige, rl.White, rl.Gray, rl.Brown, rl.White, true)
 		//fmt.Printf("X is %d, Y is %d", win.x, win.y)
 		// if button == BUTTON_DOWN_LEFT {
 		// 	rl.DrawText("h", 90, 90, 10, rl.Blue)

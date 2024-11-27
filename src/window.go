@@ -5,18 +5,64 @@ import (
 )
 
 type window struct {
-	x             float32
-	y             float32
-	sizeX         float32
-	sizeY         float32
-	title         string
-	isDragging    bool
-	dragStopDelay float32
-	dragOffsetX   float32
-	dragOffsetY   float32
-	prevSizeX     float32
-	prevSizeY     float32
-	init          bool
+	x                  float32
+	y                  float32
+	sizeX              float32
+	sizeY              float32
+	title              string
+	isDragging         bool
+	dragStopDelay      float32
+	dragOffsetX        float32
+	dragOffsetY        float32
+	isResizing         bool
+	resizeStopDelay    float32
+	resizeOffsetX      float32
+	resizeOffsetY      float32
+	resizeButtonHeight float32
+	resizeButtonGap    float32
+	prevSizeX          float32
+	prevSizeY          float32
+	init               bool
+}
+
+func handleResize(win *window, windowColor rl.Color, windowColorHover rl.Color) {
+	win.resizeButtonHeight = 30
+	win.resizeButtonGap = 0
+
+	resizeButton := ZiDrawButton("", win.x, win.y+win.sizeY+win.resizeButtonGap, win.sizeX, win.resizeButtonHeight, windowColor, rl.White, windowColorHover, -1)
+	if resizeButton == BUTTON_DOWN_LEFT || win.isResizing {
+		if !win.isResizing {
+			if rl.IsMouseButtonDown(rl.MouseButtonLeft) {
+				win.isResizing = true
+				win.resizeOffsetX = float32(rl.GetMouseX()) - win.sizeX
+				win.resizeOffsetY = float32(rl.GetMouseY()) - win.sizeY
+			}
+		}
+		if win.isResizing && rl.IsMouseButtonDown(rl.MouseButtonLeft) {
+			win.sizeX = float32(rl.GetMouseX()) - win.resizeOffsetX
+			win.sizeY = float32(rl.GetMouseY()) - win.resizeOffsetY
+		}
+		if win.prevSizeX > win.sizeX {
+			win.sizeX = win.prevSizeX
+		}
+		if win.prevSizeY > win.sizeY {
+			win.sizeY = win.prevSizeY
+		}
+	}
+}
+
+func handleResizeStop(win *window) {
+	if rl.IsMouseButtonDown(rl.MouseLeftButton) || (win.isResizing && win.resizeStopDelay <= 0) {
+		win.isResizing = false
+		win.resizeStopDelay = 0.5
+	}
+}
+
+func resize(win *window, windowColor rl.Color, windowColorHover rl.Color) {
+	if win.prevSizeX <= win.sizeX && win.prevSizeY <= win.sizeY {
+		handleResize(win, windowColor, windowColorHover)
+	}
+	handleResizeStop(win)
 }
 
 func SummonWIndow(win *window, titlebarColor rl.Color, windowColor rl.Color, windowColorHover rl.Color, titlebarColorHover rl.Color, textColor rl.Color, isResizeable bool) {
@@ -25,7 +71,9 @@ func SummonWIndow(win *window, titlebarColor rl.Color, windowColor rl.Color, win
 		win.prevSizeY = win.sizeY
 		win.init = true
 	}
-
+	if isResizeable {
+		resize(win, windowColor, windowColorHover)
+	}
 	ZiDrawButton("", win.x, win.y, win.sizeX, win.sizeY, windowColor, rl.White, windowColorHover, -1)
 	bar := ZiDrawButton(win.title, win.x, win.y-30, win.sizeX, 30, titlebarColor, rl.White, titlebarColorHover, -1)
 	if bar == BUTTON_DOWN_LEFT || win.isDragging {
