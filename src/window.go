@@ -33,7 +33,7 @@ func SummonWIndow(win *window, titlebarColor rl.Color, windowColor rl.Color, win
 		if !win.isDragging {
 			win.isDragging = true
 			win.dragOffsetX = float32(rl.GetMouseX()) - win.x
-			win.dragOffsetX = float32(rl.GetMouseY()) - win.y
+			win.dragOffsetY = float32(rl.GetMouseY()) - win.y
 		}
 		if win.isDragging && rl.IsMouseButtonDown(rl.MouseButtonLeft) {
 			//fmt.Println("Hi!")
