@@ -4,32 +4,28 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type pstate struct {
-	font rl.Font
+type PSTATE struct {
+	font  rl.Font
+	state uint8
+	error string
 }
 
-var state pstate
-
-var win window = window{x: 30, y: 30, title: "hi", sizeX: 300, sizeY: 400}
+var state PSTATE = PSTATE{state: 1}
 
 func main() {
-
+	rl.SetConfigFlags(rl.FlagWindowResizable)
 	rl.SetTraceLogLevel(rl.LogFatal)
 	rl.InitWindow(1600, 900, "Zivic Portable Desktop")
 	defer rl.CloseWindow()
 	//rl.SetTargetFPS(60)
-	state.font = rl.LoadFont("resources/fonts/Mukta-ExtraBold.ttf")
+	state.font = rl.LoadFontEx("resources/fonts/Mukta-ExtraBold.ttf", 500, nil, 0)
 	for !rl.WindowShouldClose() {
+		rl.DrawFPS(10, 10)
 		rl.BeginDrawing()
 
 		rl.ClearBackground(rl.Black)
-		//button := ZiDrawButton("Hi", 10, 10, 40, 40, rl.Red, rl.DarkGreen, rl.Brown, -1)
-		SummonWIndow(&win, rl.Beige, rl.White, rl.Gray, rl.Brown, rl.White, true)
-		//fmt.Printf("X is %d, Y is %d", win.x, win.y)
-		// if button == BUTTON_DOWN_LEFT {
-		// 	rl.DrawText("h", 90, 90, 10, rl.Blue)
-		// }
-
+		//SummonWIndow(&win, rl.Beige, rl.White, rl.Gray, rl.Brown, rl.White, true)
+		SetState()
 		rl.EndDrawing()
 	}
 }
